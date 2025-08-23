@@ -28,7 +28,7 @@ export default function LoginPage() {
 
       localStorage.setItem("token", response.data.token);
 
-      router.push("/Teste");
+      router.push("/Home");
     } catch (err: any) {
       setErro("Erro ao tentar fazer login");
     } finally {
@@ -37,7 +37,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
         <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">
           Fazer Login
