@@ -2,5 +2,6 @@ export type Pessoa = {
     id:number,
     nome:string,
     email:string,
-    salario:number
+    salario:number,
+    cidadeId:string
 }

@@ -6,14 +6,17 @@ import axios from 'axios';
 import Form from "../Components/Form";
 import Table from "../Components/Table";
 import MenuDropdown from "../Components/MenuDropdown";
+import { Cidade } from "@/types/Cidade";
 
 export default function PessoaPage() {
 
     const [pessoas, setPessoas] = useState<Pessoa[]>([]);
+    const [cidades, setCidades] = useState<Cidade[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [nome, setNome] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [salario, setSalario] = useState<string>("");
+    const [cidadeId, setCidadeId] = useState<string>("");
 
     const [editId, setEditId] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Partial<Pessoa>>({});
@@ -39,8 +42,30 @@ export default function PessoaPage() {
         setLoading(false);
     }
 
+    const getCidades = async () => {
+        try {
+            let token = localStorage.getItem("token");
+            const res = await axios.get('https://localhost:443/ControleFinanceiro/api/Cidade', {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            setCidades(res.data);
+        } catch (erro) {
+            alert("Erro de carregamento");
+        }
+        setLoading(false);
+    }
+
+    const getNomeCidade = (id: string | number) => {
+        const cidade = cidades.find(p => String(p.id) === String(id));
+        return cidade ? cidade.nome : "Cidade não informada";
+    };
+
     useEffect(() => {
         getPessoas();
+        getCidades();
     }, []);
 
     const PostPessoas = async () => {
@@ -48,7 +73,7 @@ export default function PessoaPage() {
             let token = localStorage.getItem("token");
             await axios.post(
                 "https://localhost:443/ControleFinanceiro/api/Pessoa",
-                { nome: nome, email: email, salario: salario },
+                { nome: nome, email: email, salario: salario, cidadeId: cidadeId },
                 {
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -59,6 +84,7 @@ export default function PessoaPage() {
             setNome("");
             setEmail("");
             setSalario("");
+            setCidadeId("");
         } catch (err: any) {
             if (err.response.status === 403 || err.response.status === 401) {
                 alert("Você não tem permissão para realizar essa ação.");
@@ -78,7 +104,8 @@ export default function PessoaPage() {
                     id,
                     nome: updatedData.nome,
                     email: updatedData.email,
-                    salario: updatedData.salario
+                    salario: updatedData.salario,
+                    cidadeId: updatedData.cidadeId
                 },
                 {
                     headers: {
@@ -123,7 +150,7 @@ export default function PessoaPage() {
     return (
         <>
             <div className="bg-gradient-to-r from-blue-100 to-blue-200 pt-2 pl-2">
-              <MenuDropdown />
+                <MenuDropdown />
             </div>
             <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200 p-6">
 
@@ -144,11 +171,17 @@ export default function PessoaPage() {
                             value: email,
                             onChange: (e) => setEmail(e.target.value),
                         },
-                                                {
+                        {
                             name: "salario",
                             placeholder: "Salário",
                             value: salario,
                             onChange: (e) => setSalario(e.target.value),
+                        },
+                        {
+                            name: "cidadeId",
+                            placeholder: "Id da cidade",
+                            value: cidadeId,
+                            onChange: (e) => setCidadeId(e.target.value),
                         }
                     ]}
                 />
@@ -160,6 +193,7 @@ export default function PessoaPage() {
                         { key: "nome", label: "Nome", editable: true },
                         { key: "email", label: "Email", editable: true },
                         { key: "salario", label: "Salário", editable: true },
+                        { key: "cidadeId", label: "Cidade", editable: true, render: (valor) => getNomeCidade(valor) },
                     ]}
                     loading={loading}
                     editId={editId}
@@ -167,7 +201,7 @@ export default function PessoaPage() {
                     onEditChange={handleEditChange}
                     startEdit={(pessoa) => {
                         setEditId(pessoa.id);
-                        setEditValues({ nome: pessoa.nome, email: pessoa.email, salario: pessoa.salario });
+                        setEditValues({ nome: pessoa.nome, email: pessoa.email, salario: pessoa.salario , cidadeId: pessoa.cidadeId});
                     }}
                     cancelEdit={() => {
                         setEditId(null);

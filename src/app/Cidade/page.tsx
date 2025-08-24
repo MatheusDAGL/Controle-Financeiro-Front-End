@@ -154,6 +154,7 @@ export default function CidadePage() {
                 <Table<Cidade>
                     data={cidades}
                     columns={[
+                        { key: "id", label: "Id", editable: false },
                         { key: "nome", label: "Nome da Cidade", editable: true },
                         { key: "estadoSigla", label: "Sigla do Estado", editable: true },
                     ]}
