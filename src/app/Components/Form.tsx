@@ -3,9 +3,9 @@
 import { ChangeEvent } from "react";
 
 type Field = {
-  name: string; // identificador do campo (ex: "nome", "email")
+  name: string; 
   placeholder: string;
-  type?: string; // "text", "email", "password"...
+  type?: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };

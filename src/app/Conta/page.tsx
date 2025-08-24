@@ -60,8 +60,6 @@ export default function ContaPage() {
     };
 
     const getNomePessoa = (id: string | number) => {
-        console.log("ID recebido:", id, "Tipo:", typeof id);
-
         const pessoa = pessoas.find(p => String(p.id) === String(id));
         return pessoa ? pessoa.nome : "Pessoa não encontrada";
     };
@@ -69,11 +67,6 @@ export default function ContaPage() {
         getContas();
         getPessoas();
     }, []);
-
-    useEffect(() => {
-        console.log("Contas:", contas);
-        console.log("Pessoas:", pessoas);
-    }, [contas, pessoas]);
 
     const PostContas = async () => {
         try {
